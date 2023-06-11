@@ -17,7 +17,7 @@ import com.foxminded.javaspring.cardb.model.Car;
 import com.foxminded.javaspring.cardb.service.CarService;
 
 @RestController
-@RequestMapping("/cars")
+@RequestMapping("/api/v1/cars")
 public class CarController {
 
 	private CarService carService;

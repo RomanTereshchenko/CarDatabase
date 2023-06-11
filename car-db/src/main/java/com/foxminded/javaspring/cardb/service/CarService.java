@@ -8,11 +8,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.foxminded.javaspring.cardb.dao.CarDao;
 import com.foxminded.javaspring.cardb.model.Car;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
 import lombok.var;
 import lombok.extern.slf4j.Slf4j;
@@ -46,12 +49,14 @@ public class CarService {
 		return car.get();
 	}
 	
+	@Secured({ "ROLE_MANAGER"})
 	public Car saveNewCar(Car car) throws SQLException {
 		var savedNewCar = carDao.save(car);
 		log.info("New car saved");
 		return savedNewCar;
 	}
 	
+	@RolesAllowed({"MANAGER"})
 	public Car updateCar(Car car) throws SQLException {
 		var updatingCar = carDao.findByObjectId(car.getObjectId());
 		if (updatingCar.isPresent()) {
@@ -63,6 +68,7 @@ public class CarService {
 		return null;
 	}
 	
+	@PreAuthorize("hasRole('ROLE_MANAGER')")
 	public void deleteCar(String objectId) {
 		log.info("Car with ObjectId " + objectId + " deleted");
 		carDao.deleteByObjectId(objectId);
