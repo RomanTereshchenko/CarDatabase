@@ -2,6 +2,7 @@ package com.foxminded.javaspring.cardb.service;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,16 +18,15 @@ import com.foxminded.javaspring.cardb.model.Car;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
-import lombok.var;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional
 @Slf4j
 public class CarService {
-	
+
 	private CarDao carDao;
-	
+
 	@Autowired
 	public CarService(CarDao carDao) {
 		this.carDao = carDao;
@@ -39,24 +39,34 @@ public class CarService {
 
 	public Page<Car> findPaginated(int page, int size, Sort sort) throws SQLException {
 		Pageable pageable = PageRequest.of(page, size, sort);
-		log.info("Page " + page + " is found" );
+		log.info("Page " + page + " is found");
 		return carDao.findAll(pageable);
 	}
-	
+
 	public Car findCarByObjectId(String objectId) throws SQLException {
-		var car = carDao.findByObjectId(objectId);
-		log.info("Car found");
-		return car.get();
+		Optional<Car> car = carDao.findByObjectId(objectId);
+		if (car.isPresent()) {
+			log.info("Car found");
+			return car.get();
+		}
+		log.info("Car not found");
+		return null;
 	}
-	
-	@Secured({ "ROLE_MANAGER"})
-	public Car saveNewCar(Car car) throws SQLException {
-		var savedNewCar = carDao.save(car);
+
+	public List<Car> findCars(String make, String model, Integer minYear, Integer maxYear, String category) {
+		List<Car> cars = carDao.findCars(make, model, minYear, maxYear, category);
+		log.info("Cars found");
+		return cars;
+	}
+
+	@Secured({ "ROLE_MANAGER" })
+	public Car createNewCar(Car car) throws SQLException {
+		Car savedNewCar = carDao.save(car);
 		log.info("New car saved");
 		return savedNewCar;
 	}
-	
-	@RolesAllowed({"MANAGER"})
+
+	@RolesAllowed({ "MANAGER" })
 	public Car updateCar(Car car) throws SQLException {
 		var updatingCar = carDao.findByObjectId(car.getObjectId());
 		if (updatingCar.isPresent()) {
@@ -67,12 +77,11 @@ public class CarService {
 		log.info("This car does not exist in the database");
 		return null;
 	}
-	
+
 	@PreAuthorize("hasRole('ROLE_MANAGER')")
 	public void deleteCar(String objectId) {
 		log.info("Car with ObjectId " + objectId + " deleted");
 		carDao.deleteByObjectId(objectId);
 	}
-
 
 }

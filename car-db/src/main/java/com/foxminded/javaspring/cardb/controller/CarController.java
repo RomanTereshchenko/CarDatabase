@@ -43,6 +43,13 @@ public class CarController {
 		return carService.findCarByObjectId(objectId);
 	}
 	
+	@GetMapping("/search")
+	public List<Car> findCars(@RequestParam("make") String make, @RequestParam("model") String model,
+			@RequestParam("minYear") Integer minYear, @RequestParam ("maxYear") Integer maxYear,
+			@RequestParam ("category") String category) throws SQLException {
+		return carService.findCars(make, model, minYear, maxYear, category);
+	}
+	
 	@PostMapping("/create")
 	public Car createCar(@RequestParam Map<String, String> carParams) throws SQLException {
 		Car car = new Car();
@@ -51,7 +58,7 @@ public class CarController {
 		car.setYear(Integer.parseInt(carParams.get("year")));
 		car.setModel(carParams.get("model"));
 		car.setCategory(carParams.get("category"));
-		carService.saveNewCar(car);
+		carService.createNewCar(car);
 		return car;
 	}
 	
