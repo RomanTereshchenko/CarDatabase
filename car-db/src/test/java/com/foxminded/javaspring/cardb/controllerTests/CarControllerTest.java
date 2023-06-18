@@ -5,6 +5,9 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -43,90 +46,74 @@ class CarControllerTest {
 
 	@Test
 	@WithMockUser(username = "test", roles = { "MANAGER" })
-	void whenFindAllCars_thenStatus200() throws Exception {
-		mockMvc
-		.perform(get("/api/v1/cars/all")
-		.contentType(MediaType.APPLICATION_JSON))
-		.andDo(print())
-		.andExpect(status()
-		.isOk());
+	void whenFindCars_thenStatus200() throws Exception {
+		List<Car> cars = new ArrayList<>();
+		Mockito.when(carService.findAllCars()).thenReturn(cars);
+		Page<Car> page = new PageImpl<>(cars);
+		Mockito.when(carService.findAllCars(anyInt(), anyInt(), any(Sort.class))).thenReturn(page);
+		mockMvc.perform(get("/api/v1/car-db/cars").contentType(MediaType.APPLICATION_JSON).param("page", "1")
+				.param("size", "5")).andDo(print()).andExpect(status().isOk());
+	}
+
+	@Test
+	@WithMockUser(username = "test", roles = "MANAGER")
+	void whenFindCarByObjectId_thenStatus200() throws Exception {
+		Car car = new Car();
+		Mockito.when(carService.findCarByObjectId(anyString())).thenReturn(car);
+		mockMvc.perform((get("/api/v1/car-db/cars/{objectId}", "qqq")).contentType(MediaType.APPLICATION_JSON))
+				.andDo(print()).andExpect(status().isOk());
+	}
+
+	@Test
+	@WithMockUser(username = "test", roles = "MANAGER")
+	void whenfindCarsByYears_thenStatus200() throws Exception {
+		List<Car> cars = new ArrayList<>();
+		Mockito.when(carService.findCars(anyString(), anyString(), any(Integer.class), any(Integer.class), anyString()))
+				.thenReturn(cars);
+		mockMvc.perform((get("/api/v1/car-db/cars/{make}/{model}/{category}", "toyota", "corolla", "SUV")
+				.param("minYear", "2000").param("maxYear", "2023"))
+				.contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
 	}
 
 	@Test
 	@WithMockUser(username = "test", roles = { "MANAGER" })
-	void whenFindPaginated_thenStatus200() throws Exception {
-		List<Car> cars = new ArrayList<>();
-		Page<Car> page = new PageImpl<>(cars);
-		Mockito.when(carService.findPaginated(anyInt(), anyInt(), any(Sort.class))).thenReturn(page);
-		mockMvc
-		.perform(get("/api/v1/cars/paginated")
-		.contentType(MediaType.APPLICATION_JSON)
-		.param("page", "1")
-		.param("size", "5"))
-		.andDo(print())
-		.andExpect(status()
-		.isOk());
+	void whenCreateCar_thenStatus200() throws Exception {
+		mockMvc.perform(post("/api/v1/car-db/cars").contentType(MediaType.APPLICATION_JSON).param("objectId", "aaa")
+				.param("make", "qqq").param("year", "2023").param("model", "zzz").param("category", "ppp"))
+				.andDo(print()).andExpect(status().isCreated());
 	}
-	
-	@Test
-	@WithMockUser(username = "test", roles = "MANAGER")
-	void whenGetCarByObjectId_thenStatus200() throws Exception {
-		mockMvc
-		.perform((get("/api/v1/cars/byObjectId"))
-		.contentType(MediaType.APPLICATION_JSON)
-		.param("objectId", "aaa"))
-		.andDo(print())
-		.andExpect(status()
-		.isOk());
-	}
-	
-	@Test
-	@WithMockUser(username = "test", roles = { "MANAGER" })
-	void whenCreateCar_thenStatus200() throws Exception {		
-		mockMvc.perform(post("/api/v1/cars/create")
-		.contentType(MediaType.APPLICATION_JSON)
-		.param("objectId", "aaa")
-		.param("make", "qqq")
-		.param("year", "2023")
-		.param("model", "zzz")
-		.param("category", "ppp"))
-		.andDo(print())
-		.andExpect(status().isOk());
-	}
-	
+
 	@Test
 	@WithMockUser(username = "test", roles = { "MANAGER" })
 	void whenUpdateCar_thenStatus200() throws Exception {
 		Car car = new Car();
 		Mockito.when(carService.findCarByObjectId(anyString())).thenReturn(car);
-		mockMvc.perform(post("/api/v1/cars/update")
-		.contentType(MediaType.APPLICATION_JSON)
-		.param("objectId", "aaa")
-		.param("make", "qqq")
-		.param("year", "2023")
-		.param("model", "zzz")
-		.param("category", "ppp"))
-		.andDo(print())
-		.andExpect(status().isOk());
+		mockMvc.perform(put("/api/v1/car-db/cars").contentType(MediaType.APPLICATION_JSON).param("objectId", "aaa")
+				.param("make", "qqq").param("year", "2023").param("model", "zzz").param("category", "ppp"))
+				.andDo(print()).andExpect(status().isOk());
 	}
-	
+
 	@Test
 	@WithMockUser(username = "test", roles = { "MANAGER" })
-	void whenDeleteCar_thenStatus200() throws Exception {		
+	void whenUpdateCarCategory_thenStatus200() throws Exception {
+		Car car = new Car();
+		Mockito.when(carService.findCarByObjectId(anyString())).thenReturn(car);
+		mockMvc.perform(patch("/api/v1/car-db/cars").contentType(MediaType.APPLICATION_JSON).param("objectId", "aaa")
+				.param("category", "ppp")).andDo(print()).andExpect(status().isOk());
+	}
+
+	@Test
+	@WithMockUser(username = "test", roles = { "MANAGER" })
+	void whenDeleteCar_thenStatus200() throws Exception {
 		Car car = new Car();
 		car.setObjectId("qqq");
 		car.setMake("aaa");
 		car.setYear(2023);
 		car.setModel("www");
 		car.setCategory("ppp");
-		carService.createNewCar(car);
-		mockMvc
-		.perform(post("/api/v1/cars/delete")
-		.contentType(MediaType.APPLICATION_JSON)
-		.param("objectId", "qqq"))
-		.andDo(print())
-		.andExpect(status().isOk());
+		carService.saveNewCar(car);
+		mockMvc.perform(delete("/api/v1/car-db/cars").contentType(MediaType.APPLICATION_JSON).param("objectId", "qqq"))
+				.andDo(print()).andExpect(status().isOk());
 	}
-
 
 }

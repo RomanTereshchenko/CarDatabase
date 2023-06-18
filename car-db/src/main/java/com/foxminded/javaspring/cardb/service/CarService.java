@@ -37,7 +37,7 @@ public class CarService {
 		return carDao.findAll();
 	}
 
-	public Page<Car> findPaginated(int page, int size, Sort sort) throws SQLException {
+	public Page<Car> findAllCars(int page, int size, Sort sort) throws SQLException {
 		Pageable pageable = PageRequest.of(page, size, sort);
 		log.info("Page " + page + " is found");
 		return carDao.findAll(pageable);
@@ -60,7 +60,7 @@ public class CarService {
 	}
 
 	@Secured({ "ROLE_MANAGER" })
-	public Car createNewCar(Car car) throws SQLException {
+	public Car saveNewCar(Car car) throws SQLException {
 		Car savedNewCar = carDao.save(car);
 		log.info("New car saved");
 		return savedNewCar;
@@ -68,7 +68,7 @@ public class CarService {
 
 	@RolesAllowed({ "MANAGER" })
 	public Car updateCar(Car car) throws SQLException {
-		var updatingCar = carDao.findByObjectId(car.getObjectId());
+		Optional<Car> updatingCar = carDao.findByObjectId(car.getObjectId());
 		if (updatingCar.isPresent()) {
 			carDao.save(car);
 			log.info("Car is updated");
@@ -83,5 +83,5 @@ public class CarService {
 		log.info("Car with ObjectId " + objectId + " deleted");
 		carDao.deleteByObjectId(objectId);
 	}
-
+	
 }
