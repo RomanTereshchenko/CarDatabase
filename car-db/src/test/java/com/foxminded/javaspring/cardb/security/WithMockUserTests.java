@@ -1,4 +1,4 @@
-package com.foxminded.javaspring.cardb.securityTests;
+package com.foxminded.javaspring.cardb.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
