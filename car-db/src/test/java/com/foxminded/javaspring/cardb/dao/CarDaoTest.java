@@ -1,4 +1,4 @@
-package com.foxminded.javaspring.cardb.daoTests;
+package com.foxminded.javaspring.cardb.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
