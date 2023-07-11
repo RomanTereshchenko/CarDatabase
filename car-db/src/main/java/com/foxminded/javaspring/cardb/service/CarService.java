@@ -59,14 +59,14 @@ public class CarService {
 		return cars;
 	}
 
-	@Secured({ "ROLE_MANAGER" })
+//	@Secured({ "ROLE_MANAGER" })
 	public Car saveNewCar(Car car) throws SQLException {
 		Car savedNewCar = carDao.save(car);
 		log.info("New car saved");
 		return savedNewCar;
 	}
 
-	@RolesAllowed({ "MANAGER" })
+//	@RolesAllowed({ "MANAGER" })
 	public Car updateCar(Car car) throws SQLException {
 		Optional<Car> updatingCar = carDao.findByObjectId(car.getObjectId());
 		if (updatingCar.isPresent()) {
@@ -78,7 +78,7 @@ public class CarService {
 		return null;
 	}
 
-	@PreAuthorize("hasRole('ROLE_MANAGER')")
+//	@PreAuthorize("hasRole('ROLE_MANAGER')")
 	public void deleteCar(String objectId) {
 		log.info("Car with ObjectId " + objectId + " deleted");
 		carDao.deleteByObjectId(objectId);
