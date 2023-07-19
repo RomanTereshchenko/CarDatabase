@@ -35,8 +35,7 @@ public class SecurityConfig {
 				.anyRequest()
 				.hasAnyRole("USER", "MANAGER"))
 				.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
-				.jwt(jwt ->	jwt.decoder(jwtDecoder())
-				.jwtAuthenticationConverter(jwtConverter())));
+				.jwt(jwt ->	jwt.decoder(jwtDecoder()).jwtAuthenticationConverter(jwtConverter())));
 		return http.build();
 	}
 	
