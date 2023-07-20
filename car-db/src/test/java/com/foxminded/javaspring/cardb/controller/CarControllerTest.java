@@ -30,11 +30,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.foxminded.javaspring.cardb.model.Car;
 import com.foxminded.javaspring.cardb.security.MethodSecurityConfig;
-import com.foxminded.javaspring.cardb.security.SecSecurityConfig;
+import com.foxminded.javaspring.cardb.security.SecurityConfig;
 import com.foxminded.javaspring.cardb.service.CarService;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest({ CarController.class, MethodSecurityConfig.class, SecSecurityConfig.class })
+@WebMvcTest({ CarController.class, MethodSecurityConfig.class, SecurityConfig.class })
 class CarControllerTest {
 
 	@Autowired
