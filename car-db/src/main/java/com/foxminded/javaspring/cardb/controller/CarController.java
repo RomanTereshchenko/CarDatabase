@@ -24,6 +24,10 @@ import com.foxminded.javaspring.cardb.dto.CarUpdatePartDto;
 import com.foxminded.javaspring.cardb.model.Car;
 import com.foxminded.javaspring.cardb.service.CarService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @RestController
 @RequestMapping("/api/v1/cars")
 public class CarController {
@@ -35,6 +39,8 @@ public class CarController {
 		this.carService = carService;
 	}
 
+	@Operation(summary = "Get all cars paginated", security = @SecurityRequirement(name = "Auth0"))
+	@ApiResponse(responseCode = "200", description = "Found all cars")
 	@GetMapping
 	public List<Car> findCars(@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "size", required = false) Integer size) throws SQLException {
@@ -46,11 +52,15 @@ public class CarController {
 		return resultPage.getContent();
 	}
 
+	@Operation(summary = "Get car by objectId", security = @SecurityRequirement(name = "Auth0"))
+	@ApiResponse(responseCode = "200", description = "Found the car")
 	@GetMapping("/{objectId}")
 	public Car findCarByObjectId(@PathVariable("objectId") String objectId) throws SQLException {
 		return carService.findCarByObjectId(objectId);
 	}
 
+	@Operation(summary = "Get all cars of selected make, model and category", security = @SecurityRequirement(name = "Auth0"))
+	@ApiResponse(responseCode = "200", description = "Found the cars")
 	@GetMapping("/{make}/{model}/{category}")
 	public List<Car> findCarsByYears(@PathVariable("make") String make, @PathVariable("model") String model,
 			@PathVariable("category") String category, @RequestParam("minYear") Integer minYear,
@@ -58,6 +68,8 @@ public class CarController {
 		return carService.findCars(make, model, minYear, maxYear, category);
 	}
 
+	@Operation(summary = "Create new car", security = @SecurityRequirement(name = "Auth0"))
+	@ApiResponse(responseCode = "200", description = "Car created")
 	@PostMapping
 	public ResponseEntity<String> createCar(@RequestBody CarCreateUpdateDto carDto) throws SQLException {
 		Car car = new Car();
@@ -70,6 +82,8 @@ public class CarController {
 		return new ResponseEntity<>("Car saved", HttpStatus.CREATED);
 	}
 
+	@Operation(summary = "Update all parameters of the selected car", security = @SecurityRequirement(name = "Auth0"))
+	@ApiResponse(responseCode = "200", description = "Car fully updated")
 	@PutMapping
 	public ResponseEntity<String> updateCarFull(@RequestBody CarCreateUpdateDto carDto) throws SQLException {
 		Car car = carService.findCarByObjectId(carDto.getObjectId());
@@ -82,6 +96,8 @@ public class CarController {
 		return new ResponseEntity<>("Car updated", HttpStatus.OK);
 	}
 
+	@Operation(summary = "Update the selected car's year and model", security = @SecurityRequirement(name = "Auth0"))
+	@ApiResponse(responseCode = "200", description = "Car's year and model updated")
 	@PatchMapping
 	public ResponseEntity<String> updateCarPart(@RequestBody CarUpdatePartDto carDto)
 			throws SQLException {
@@ -92,6 +108,8 @@ public class CarController {
 		return new ResponseEntity<>("Car updated", HttpStatus.OK);
 	}
 
+	@Operation(summary = "Delete car by objectId", security = @SecurityRequirement(name = "Auth0"))
+	@ApiResponse(responseCode = "200", description = "Car deleted")
 	@DeleteMapping
 	public ResponseEntity<String> deleteCar(@RequestParam String objectId) {
 		carService.deleteCar(objectId);

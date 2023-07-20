@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,20 +25,33 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication;
 import org.springframework.security.web.SecurityFilterChain;
 
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+
 @Configuration
 @EnableWebSecurity
+@SecurityScheme(
+    name = "Auth0",
+    type = SecuritySchemeType.HTTP,
+    bearerFormat = "JWT",
+    scheme = "bearer"
+)
 public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
 				.authorizeHttpRequests(auth -> auth
-				.anyRequest()
-				.hasAnyRole("USER", "MANAGER"))
+				.requestMatchers("/swagger-ui/**", "swagger-resources/*", "/v3/api-docs/**").permitAll()
+				.anyRequest().hasAnyRole("USER", "MANAGER"))
 				.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
 				.jwt(jwt ->	jwt.decoder(jwtDecoder()).jwtAuthenticationConverter(jwtConverter())));
 		return http.build();
 	}
+	
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().requestMatchers("/swagger-ui/**", "/bus/v3/api-docs/**");
+    }
 	
 	private Converter<Jwt, ? extends AbstractAuthenticationToken> jwtConverter() {
 		return (Converter<Jwt, AbstractAuthenticationToken>) jwt -> {
