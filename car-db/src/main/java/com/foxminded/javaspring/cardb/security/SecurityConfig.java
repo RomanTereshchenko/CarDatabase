@@ -42,10 +42,12 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
 				.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/swagger-ui/**", "swagger-resources/*", "/v3/api-docs/**").permitAll()
-				.anyRequest().hasAnyRole("USER", "MANAGER"))
-				.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
-				.jwt(jwt ->	jwt.decoder(jwtDecoder()).jwtAuthenticationConverter(jwtConverter())));
+				.anyRequest()
+				.permitAll());
+//				.requestMatchers("/swagger-ui/**", "swagger-resources/*", "/v3/api-docs/**").permitAll()
+//				.anyRequest().hasAnyRole("USER", "MANAGER"))
+//				.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
+//				.jwt(jwt ->	jwt.decoder(jwtDecoder()).jwtAuthenticationConverter(jwtConverter())));
 		return http.build();
 	}
 	

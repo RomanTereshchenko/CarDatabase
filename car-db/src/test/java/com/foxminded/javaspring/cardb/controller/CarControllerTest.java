@@ -44,7 +44,7 @@ class CarControllerTest {
 	private CarService carService;
 
 	@Test
-	@WithMockUser(username = "test", roles = { "MANAGER" })
+	@WithMockUser(username = "test", roles = { "USER" })
 	void whenFindCars_thenStatus200() throws Exception {
 		List<Car> cars = new ArrayList<>();
 		Mockito.when(carService.findAllCars()).thenReturn(cars);
@@ -55,7 +55,7 @@ class CarControllerTest {
 	}
 
 	@Test
-	@WithMockUser(username = "test", roles = "MANAGER")
+	@WithMockUser(username = "test", roles = "USER")
 	void whenFindCarByObjectId_thenStatus200() throws Exception {
 		Car car = new Car();
 		Mockito.when(carService.findCarByObjectId(anyString())).thenReturn(car);
@@ -64,7 +64,7 @@ class CarControllerTest {
 	}
 
 	@Test
-	@WithMockUser(username = "test", roles = "MANAGER")
+	@WithMockUser(username = "test", roles = "USER")
 	void whenfindCarsByYears_thenStatus200() throws Exception {
 		List<Car> cars = new ArrayList<>();
 		Mockito.when(carService.findCars(anyString(), anyString(), any(Integer.class), any(Integer.class), anyString()))
@@ -75,7 +75,7 @@ class CarControllerTest {
 	}
 
 	@Test
-	@WithMockUser(username = "test", roles = { "MANAGER" })
+	@WithMockUser(username = "test", roles = { "USER" })
 	void whenCreateCar_thenStatus200() throws Exception {
 		mockMvc.perform(post("/api/v1/cars").contentType(MediaType.APPLICATION_JSON).
 				content("{\"objectId\":\"aaa\",\"make\":\"qqq\",\"year\":\"2024\",\"model\":\"zzz\",\"category\":\"xxx\"}"))
@@ -83,7 +83,7 @@ class CarControllerTest {
 	}
 	
 	@Test
-	@WithMockUser(username = "test", roles = { "MANAGER" })
+	@WithMockUser(username = "test", roles = { "USER" })
 	void whenUpdateCarFull_thenStatus200() throws Exception {
 		Car car = new Car();
 		Mockito.when(carService.findCarByObjectId(anyString())).thenReturn(car);
@@ -93,7 +93,7 @@ class CarControllerTest {
 	}
 
 	@Test
-	@WithMockUser(username = "test", roles = { "MANAGER" })
+	@WithMockUser(username = "test", roles = { "USER" })
 	void whenUpdateCarPart_thenStatus200() throws Exception {
 		Car car = new Car();
 		Mockito.when(carService.findCarByObjectId(anyString())).thenReturn(car);
@@ -103,7 +103,7 @@ class CarControllerTest {
 	}
 
 	@Test
-	@WithMockUser(username = "test", roles = { "MANAGER" })
+	@WithMockUser(username = "test", roles = { "USER" })
 	void whenDeleteCar_thenStatus200() throws Exception {
 		Car car = new Car();
 		car.setObjectId("qqq");
