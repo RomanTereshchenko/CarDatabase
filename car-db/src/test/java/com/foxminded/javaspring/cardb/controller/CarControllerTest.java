@@ -30,12 +30,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.foxminded.javaspring.cardb.model.Car;
-import com.foxminded.javaspring.cardb.security.TestSecurityConfig;
+import com.foxminded.javaspring.cardb.security.SecurityConfig;
 import com.foxminded.javaspring.cardb.service.CarService;
 
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest({ CarController.class, TestSecurityConfig.class })
+@WebMvcTest({ CarController.class, SecurityConfig.class })
 @AutoConfigureMockMvc(addFilters = false)
 public class CarControllerTest {
 	

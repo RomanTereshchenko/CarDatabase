@@ -1,8 +1,9 @@
 package com.foxminded.javaspring.cardb.generator;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -55,7 +56,9 @@ public class DbLoader {
 
 	private List<List<String>> readDataFromFile() throws IOException {
 		List<List<String>> records = new ArrayList<>();
-		try (BufferedReader br = new BufferedReader(new FileReader("src/main/resources/file.csv"))) {
+		ClassLoader classLoader = getClass().getClassLoader();
+		InputStream inputStream = classLoader.getResourceAsStream("file.csv");
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"))) {	
 			String line;
 			while ((line = br.readLine()) != null) {
 				String[] values = line.split(",");
