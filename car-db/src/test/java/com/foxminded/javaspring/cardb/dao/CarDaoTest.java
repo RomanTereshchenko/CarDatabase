@@ -15,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.foxminded.javaspring.cardb.dao.CarDao;
 import com.foxminded.javaspring.cardb.model.Car;
 
 import lombok.extern.slf4j.Slf4j;
