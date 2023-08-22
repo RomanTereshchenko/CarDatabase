@@ -27,6 +27,7 @@ import com.foxminded.javaspring.cardb.service.CarService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.Data;
 
 @RestController
 @RequestMapping("/api/v1/cars")
